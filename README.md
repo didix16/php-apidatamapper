@@ -608,9 +608,9 @@ WOW, that's a lot information! Yeah I know. But for the moment pay attention to 
 
 Model map functions are very easy to implement: just need the run(...$args) method.
 
-$arg[ 0 ] contains the value coming from interpreter (after filter pipeline)
+$args 0 contains the value coming from interpreter (after filter pipeline)
 
-$arg [ 1 ] holds the entire APIDataObject.
+$args 1 holds the entire APIDataObject.
 
 NOTE: Data may not be the original one because the Interpreter may changed the value by applying your filters.
 
