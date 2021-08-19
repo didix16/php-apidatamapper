@@ -9,6 +9,7 @@ use didix16\Api\ApiDataMapper\FieldInterpreter\FieldInterpreter;
 use didix16\Api\ApiDataMapper\FieldInterpreter\Filters\FieldFilter;
 use didix16\Api\ApiDataMapper\FieldInterpreter\Functions\AggregateFunction;
 use didix16\Api\ApiDataObject\ApiDataObjectInterface;
+use didix16\Hydrator\HydratorInterface;
 use didix16\Hydrator\ReflectionHydrator;
 use Exception;
 use ReflectionException;
@@ -60,9 +61,9 @@ class ModelMap implements ModelMapInterface
 
     /**
      * The hydrator used to fill the given model properties
-     * @var ReflectionHydrator;
+     * @var HydratorInterface;
      */
-    private ReflectionHydrator $dataHydrator;
+    private HydratorInterface $dataHydrator;
 
     /**
      * A flag indicating if multiple instances must be generated instead of only one
@@ -76,9 +77,12 @@ class ModelMap implements ModelMapInterface
      */
     private string $arrayField = "";
 
-    public function __construct()
+    public function __construct(?HydratorInterface $hydrator = null)
     {
-        $this->dataHydrator = new ReflectionHydrator();
+        if(!$hydrator)
+            $this->dataHydrator = new ReflectionHydrator();
+        else
+            $this->dataHydrator = $hydrator;
     }
 
     /**
