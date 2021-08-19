@@ -435,11 +435,11 @@ class ModelMap implements ModelMapInterface
      * Calls the given function name on this model map with $value field and entire APiDataObject as arguments
      * @param $functionName
      * @param $value
-     * @param ApiDataObjectInterface $apiDataObject
+     * @param ApiDataObjectInterface|object $apiDataObject
      * @return mixed
      * @throws Exception
      */
-    private function callFunction($functionName, &$value, ApiDataObjectInterface $apiDataObject){
+    private function callFunction($functionName, &$value, object $apiDataObject){
 
         if( isset($this->fieldFunctions[$functionName]) ) {
             return $this->fieldFunctions[$functionName]($value, $apiDataObject);
