@@ -12,4 +12,9 @@ use didix16\Interpreter\InterpreterFilter;
 abstract class FieldFilter extends InterpreterFilter
 {
 
+    public function __construct(string $name)
+    {
+        parent::__construct($name);
+    }
+
 }
