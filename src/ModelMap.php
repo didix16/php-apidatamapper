@@ -381,17 +381,21 @@ class ModelMap implements ModelMapInterface
                     ->loadFieldFilters($fieldInterpreter);
                 $processedField = $fieldInterpreter->run();
 
-                // Need the processedField be processed by a modelFieldFunction ?
-                if($modelFieldFunction){
-                    $processedField[$externalField] = $this->callFunction(
-                        $modelFieldFunction,
-                        $processedField[$externalField],
-                        $listObject,
-                        $modelField
-                    );
-                }
+                if(! FieldInterpreter::isUndefined($processedField[$externalField])){
 
-                $fieldData[$modelField] = $processedField[$externalField];
+                    // Need the processedField be processed by a modelFieldFunction ?
+                    if($modelFieldFunction){
+                        $processedField[$externalField] = $this->callFunction(
+                            $modelFieldFunction,
+                            $processedField[$externalField],
+                            $listObject,
+                            $modelField
+                        );
+                    }
+
+                    $fieldData[$modelField] = $processedField[$externalField];
+                } else
+                    unset($processedField);
             }
         }
 
@@ -413,18 +417,24 @@ class ModelMap implements ModelMapInterface
                     ->loadFieldFilters($fieldInterpreter);
             $processedField = $fieldInterpreter->run();
 
-            // Need the processedField be processed by a modelFieldFunction ?
-            if($modelFieldFunction){
+            if(! FieldInterpreter::isUndefined($processedField[$externalField])){
 
-                $processedField[$externalField] = $this->callFunction(
-                    $modelFieldFunction,
-                    $processedField[$externalField],
-                    $data,
-                    $modelField
-                );
-            }
+                // Need the processedField be processed by a modelFieldFunction ?
+                if($modelFieldFunction){
 
-            $fieldData[$modelField] = $processedField[$externalField];
+                    $processedField[$externalField] = $this->callFunction(
+                        $modelFieldFunction,
+                        $processedField[$externalField],
+                        $data,
+                        $modelField
+                    );
+                }
+
+            
+                $fieldData[$modelField] = $processedField[$externalField];
+            } else
+                unset($processedField);
+
         }
 
         // Hydrate model instance by giving the fieldData array to it

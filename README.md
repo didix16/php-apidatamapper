@@ -228,7 +228,7 @@ BTW: You can only use aggregate functions with list fields inside! I.e: MAX(name
 
 ### FieldInterpreter
 
-As we saw above, the make FieldInterpreter do its work, we need a [FieldLexer](src/FieldGrammar/FieldLexer.php) and [FieldParser](src/FieldGrammar/FieldParser.php).
+As we saw above, to make FieldInterpreter do its work, we need a [FieldLexer](src/FieldGrammar/FieldLexer.php) and [FieldParser](src/FieldGrammar/FieldParser.php).
 
 The FieldLexer receives the Field Language input syntax. The FieldParser receives the FieldLexer as the only argument.
 
@@ -247,6 +247,16 @@ $fi = new FieldInterpreter($parser, $data);
 
 $res = $fi->run(); // returns an array
 ```
+
+NOTE: If you specify a field which is not coming in incoming data, then the value for that field will be:
+```php
+class UndefinedField {}
+```
+
+So you must check with **FieldInterpreter::isUndefined($res\[$field\])** if the result is correct or is an undefined field.
+
+This works like this because in previous versions ( < 1.0.6), the FieldInterpreter returns null and thus making ambiguous response between real incoming NULL value or just an undefined field.
+
 
 #### FieldFilter
 

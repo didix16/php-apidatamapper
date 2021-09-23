@@ -48,6 +48,15 @@ class FieldInterpreter extends Interpreter
      */
     protected $currentData;
 
+    /**
+     * Check if $value is undefined value. Means this fieldinterpreter could not detect the value for specified field
+     * inside incoming data
+     */
+    public static function isUndefined($value): bool
+    {
+        return $value instanceof UndefinedField;
+    }
+
     public function __construct(FieldParser $parser, object $data)
     {
         parent::__construct($parser, $data);
@@ -248,8 +257,10 @@ class FieldInterpreter extends Interpreter
      */
     protected function setCurrentData($field) {
         
-        // if currentData is null means the desired field is not coming, so we must skip it
+        // if currentData is null means the desired field is not coming, so we must skip it and set to undefined
         if(is_null($this->currentData))
+            return ($this->currentData = new UndefinedField);
+        else if(FieldInterpreter::isUndefined($this->currentData))
             return $this->currentData;
 
         if(is_object($this->currentData)){
@@ -297,8 +308,10 @@ class FieldInterpreter extends Interpreter
      */
     protected function setCurrentDataWithFilters($field, array $filters = []){
 
-        // if currentData is null means the desired field is not coming, so we must skip it
+        // if currentData is null means the desired field is not coming, so we must skip it and set to undefined
         if(is_null($this->currentData))
+            return ($this->currentData = new UndefinedField);
+        else if(FieldInterpreter::isUndefined($this->currentData))
             return $this->currentData;
 
         if (is_object($this->currentData)){
