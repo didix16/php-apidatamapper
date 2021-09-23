@@ -10,6 +10,8 @@ use didix16\Api\ApiDataMapper\FieldInterpreter\Filters\DateFilter;
 use didix16\Api\ApiDataMapper\FieldInterpreter\Functions\MaxFunction;
 use didix16\Api\ApiDataMapper\FieldInterpreter\Functions\MinFunction;
 use didix16\Api\ApiDataObject\ApiDataObjectInterface;
+use didix16\Api\ApiDataObject\ApiDataObject;
+use didix16\Api\ApiDataObject\UndefinedField;
 use didix16\Grammar\Lexer;
 use didix16\Grammar\Token;
 use didix16\Interpreter\HasFilter;
@@ -47,15 +49,6 @@ class FieldInterpreter extends Interpreter
      * @var object|array
      */
     protected $currentData;
-
-    /**
-     * Check if $value is undefined value. Means this fieldinterpreter could not detect the value for specified field
-     * inside incoming data
-     */
-    public static function isUndefined($value): bool
-    {
-        return $value instanceof UndefinedField;
-    }
 
     public function __construct(FieldParser $parser, object $data)
     {
@@ -260,7 +253,7 @@ class FieldInterpreter extends Interpreter
         // if currentData is null means the desired field is not coming, so we must skip it and set to undefined
         if(is_null($this->currentData))
             return ($this->currentData = new UndefinedField);
-        else if(FieldInterpreter::isUndefined($this->currentData))
+        else if(ApiDataObject::isUndefined($this->currentData))
             return $this->currentData;
 
         if(is_object($this->currentData)){
@@ -311,7 +304,7 @@ class FieldInterpreter extends Interpreter
         // if currentData is null means the desired field is not coming, so we must skip it and set to undefined
         if(is_null($this->currentData))
             return ($this->currentData = new UndefinedField);
-        else if(FieldInterpreter::isUndefined($this->currentData))
+        else if(ApiDataObject::isUndefined($this->currentData))
             return $this->currentData;
 
         if (is_object($this->currentData)){

@@ -250,12 +250,10 @@ $res = $fi->run(); // returns an array
 
 NOTE: If you specify a field which is not coming in incoming data, then the value for that field will be:
 ```php
-class UndefinedField {}
+class didix16\Api\ApiDataObject\UndefinedField {}
 ```
 
-So you must check with **FieldInterpreter::isUndefined($res\[$field\])** if the result is correct or is an undefined field.
-
-This works like this because in previous versions ( < 1.0.6), the FieldInterpreter returns null and thus making ambiguous response between real incoming NULL value or just an undefined field.
+So you must check with **ApiDataObject::isUndefined($res\[$field\])** if the result is correct or is an undefined field.
 
 
 #### FieldFilter

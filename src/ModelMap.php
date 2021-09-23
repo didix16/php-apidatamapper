@@ -8,6 +8,7 @@ use didix16\Api\ApiDataMapper\FieldGrammar\FieldParser;
 use didix16\Api\ApiDataMapper\FieldInterpreter\FieldInterpreter;
 use didix16\Api\ApiDataMapper\FieldInterpreter\Filters\FieldFilter;
 use didix16\Api\ApiDataMapper\FieldInterpreter\Functions\AggregateFunction;
+use didix16\Api\ApiDataObject\ApiDataObject;
 use didix16\Api\ApiDataObject\ApiDataObjectInterface;
 use didix16\Hydrator\HydratorInterface;
 use didix16\Hydrator\ReflectionHydrator;
@@ -381,7 +382,7 @@ class ModelMap implements ModelMapInterface
                     ->loadFieldFilters($fieldInterpreter);
                 $processedField = $fieldInterpreter->run();
 
-                if(! FieldInterpreter::isUndefined($processedField[$externalField])){
+                if(! ApiDataObject::isUndefined($processedField[$externalField])){
 
                     // Need the processedField be processed by a modelFieldFunction ?
                     if($modelFieldFunction){
@@ -417,7 +418,7 @@ class ModelMap implements ModelMapInterface
                     ->loadFieldFilters($fieldInterpreter);
             $processedField = $fieldInterpreter->run();
 
-            if(! FieldInterpreter::isUndefined($processedField[$externalField])){
+            if(! ApiDataObject::isUndefined($processedField[$externalField])){
 
                 // Need the processedField be processed by a modelFieldFunction ?
                 if($modelFieldFunction){
