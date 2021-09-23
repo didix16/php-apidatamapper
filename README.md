@@ -619,11 +619,31 @@ use didix16\Api\ApiDataMapper\ModelMapFunction;
 
 class GetColorMapFunction extends ModelMapFunction
 {
+    // parameters and its default values
+    protected $parameterName = null;
+
     public function run(...$args)
     {
         $colorName = $args[0];
         $apiDataObject = $args[1];
         $fieldName = $args[2];
+
+        /**
+         * At v1.0.5+ also you can pass external parameters to be used inside run method at construction time
+         * 
+         * Remember that the given parameters should exists in your ModelMapFunction
+         * 
+         * You can build ModelMapFunction using:
+         * 
+         * new YourModelMapFunction("", ['param1' => 'value1', ...])
+         * YourModelMapFunction::withParameters(['param1' => 'value1', ...]) <== this is an alias of constructor above
+         * 
+         * Example:
+         * 
+         * GetColorMapFunction::withParameters(['parameterName' => '#FF0000'])
+         * 
+         */
+        $colorString = $this->parameterName; // #FF0000
 
         return new Color($colorName);
     }

@@ -11,4 +11,5 @@ interface ModelMapfunctionInterface
 {
     public function getName(): string;
     public function __invoke(...$args);
+    public static function withParameters(array $params = []);
 }

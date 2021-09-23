@@ -15,14 +15,33 @@ abstract class ModelMapFunction implements ModelMapfunctionInterface
      */
     protected $name;
 
-    public function __construct($name = "")
+    public function __construct($name = "", array $parameters = [])
     {
-        if (empty($name)){
-            $this->name = $this->getNameByClassName();
-        }else{
-            $this->name = $name;
-        }
+        $this->name = empty($name) ? $this->getNameByClassName() : $name;
+        
+        $this->setParams($parameters);
 
+    }
+
+    /**
+     * Builds a ModelMapFunction with by passing parameters
+     */
+    public static function withParameters(array $params = [])
+    {
+        return new static("", $params);
+    }
+
+    /**
+     * Set all the given properties for this function.
+     * Note: Only sets those which exists for this class
+     */
+    private function setParams(array $params = []): void
+    {
+        foreach($params as $param => $value)
+        {
+            if(property_exists($this, $param))
+                $this->{$param} = $value;
+        }
     }
 
     /**
