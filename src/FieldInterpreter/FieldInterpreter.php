@@ -251,10 +251,10 @@ class FieldInterpreter extends Interpreter
     protected function setCurrentData($field) {
         
         // if currentData is null means the desired field is not coming, so we must skip it and set to undefined
-        if(is_null($this->currentData))
-            return ($this->currentData = new UndefinedField);
-        else if(ApiDataObject::isUndefined($this->currentData))
+        if(ApiDataObject::isUndefined($this->currentData))
             return $this->currentData;
+        else if(is_null($this->currentData))
+            return ($this->currentData = new UndefinedField);
 
         if(is_object($this->currentData)){
 
@@ -302,14 +302,16 @@ class FieldInterpreter extends Interpreter
     protected function setCurrentDataWithFilters($field, array $filters = []){
 
         // if currentData is null means the desired field is not coming, so we must skip it and set to undefined
-        if(is_null($this->currentData))
-            return ($this->currentData = new UndefinedField);
-        else if(ApiDataObject::isUndefined($this->currentData))
+        if(ApiDataObject::isUndefined($this->currentData))
             return $this->currentData;
+        else if(is_null($this->currentData))
+            return ($this->currentData = new UndefinedField);
+        
 
         if (is_object($this->currentData)){
 
-            $this->transformData($filters, $this->currentData->{$field});
+            if(!ApiDataObject::isUndefined($this->currentData->{$field}))
+                $this->transformData($filters, $this->currentData->{$field});
             $this->currentData = $this->currentData->{$field};
         }else {
 
