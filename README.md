@@ -623,6 +623,7 @@ class GetColorMapFunction extends ModelMapFunction
     {
         $colorName = $args[0];
         $apiDataObject = $args[1];
+        $fieldName = $args[2];
 
         return new Color($colorName);
     }
@@ -658,7 +659,7 @@ This way we can extend our language field mapping though a model map instead of 
 
 Why we need a factory to instnatiate model maps? Well this is a pice of the amazing ApiDataMapper that allows to pass a class of any kind ( the ones we have in our ModelMapFactory) and let configure our model maps in runtime as well as leave the tough work to ApiDataMapper.
 
-Remember that our goal is only to cofigure the mapping and leave the rest to APIDataMapper :)
+Remember that our goal is only to configure the mapping and leave the rest to APIDataMapper :)
 
 
 As we saw before, this is an example of a factory that can generate mappings for Warrior and Monster classes.
@@ -949,7 +950,7 @@ Basically, from this packge we will need:
 
     Feel free to instnatiate your api data object from any source and remember transform it to a valid php data.
 
-    For example you could read from XML and transform it to an array or an object. This could be done inside an static function called fromXML():
+    For example you could read from XML and transform it to an array or an object. This could be done inside static function called fromXML():
 
     ```php
 

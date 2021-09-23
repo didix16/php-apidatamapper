@@ -386,7 +386,8 @@ class ModelMap implements ModelMapInterface
                     $processedField[$externalField] = $this->callFunction(
                         $modelFieldFunction,
                         $processedField[$externalField],
-                        $listObject
+                        $listObject,
+                        $modelField
                     );
                 }
 
@@ -418,7 +419,8 @@ class ModelMap implements ModelMapInterface
                 $processedField[$externalField] = $this->callFunction(
                     $modelFieldFunction,
                     $processedField[$externalField],
-                    $data
+                    $data,
+                    $modelField
                 );
             }
 
@@ -432,17 +434,19 @@ class ModelMap implements ModelMapInterface
     }
 
     /**
-     * Calls the given function name on this model map with $value field and entire APiDataObject as arguments
+     * Calls the given function name on this model map with $value field, entire APiDataObject
+     * and modelfield as arguments
      * @param $functionName
      * @param $value
      * @param ApiDataObjectInterface|object $apiDataObject
+     * @param string $modelField
      * @return mixed
      * @throws Exception
      */
-    private function callFunction($functionName, &$value, object $apiDataObject){
+    private function callFunction($functionName, &$value, object $apiDataObject, string $modelField){
 
         if( isset($this->fieldFunctions[$functionName]) ) {
-            return $this->fieldFunctions[$functionName]($value, $apiDataObject);
+            return $this->fieldFunctions[$functionName]($value, $apiDataObject, $modelField);
         }else{
             throw new \Exception("Method [$functionName] does not exists on this model map. Did you registered?");
         }

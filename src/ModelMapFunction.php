@@ -45,7 +45,10 @@ abstract class ModelMapFunction implements ModelMapfunctionInterface
 
     /**
      * Code to run when called
-     * Usually $args[0] should be the value being processed and $args[1] the ApiDataObject with whole data
+     * Usually:
+     *  $args[0] should be the value being processed
+     *  $args[1] the ApiDataObject with whole data
+     *  $args[2] the modelField name to set the data
      * @param $args
      * @return mixed
      */
