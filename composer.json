@@ -3,9 +3,9 @@
     "description": "An extensible DTO library that allows map incoming API data to any of your entities/models by using a simple filed mapping language with filters and functions.",
     "type": "library",
     "keywords": ["DTO", "api", "map", "data", "field", "mapping", "model", "entity", "transform", "language", "extensible"],
-    "version": "1.0.8",
+    "version": "1.1.0",
     "require": {
-        "php": ">= 7.2",
+        "php": ">=7.4",
         "didix16/php-interpreter": "^1.0",
         "didix16/php-hydrator": "^1.0",
         "didix16/php-grammar": "^1.0",

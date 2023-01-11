@@ -36,10 +36,10 @@ $apiData = WarriorApiDataObject::fromJson($jsonIncomingFromWarriorAPI);
 $aWarrior = $apiDataMapper->mapToModel(Warrior::class, $apiData);
 
 // Lancelot info
-echo 'Name: ' . $aWarrior->getName() . "\n";
-echo 'Is Active: ' . ($aWarrior->isActive() ? 'yes' : 'no') . "\n";
-echo 'Holding weapon: ' . $aWarrior->getWeapon() . "\n";
-echo 'Comes from: ' . $aWarrior->getPlace() . "\n";
+echo 'Name: ' . $aWarrior->getName() . "\n"; // Lancelot
+echo 'Is Active: ' . ($aWarrior->isActive() ? 'yes' : 'no') . "\n"; // no
+echo 'Holding weapon: ' . $aWarrior->getWeapon() . "\n"; // Spear
+echo 'Comes from: ' . $aWarrior->getPlace() . "\n"; // Camelot
 
 
 /*********************************************
@@ -161,10 +161,10 @@ $apiDataMapper
 
 echo "\n";
 echo "\n";
-echo 'Name: ' . $warrior->getName() . "\n";
-echo 'Is Active: ' . ($warrior->isActive() ? 'yes' : 'no') . "\n";
-echo 'Holding weapon: ' . $warrior->getWeapon() . "\n";
-echo 'Comes from: ' . $warrior->getPlace() . "\n";
+echo 'Name: ' . $warrior->getName() . "\n"; // Lancelot of the Lake
+echo 'Is Active: ' . ($warrior->isActive() ? 'yes' : 'no') . "\n"; // no
+echo 'Holding weapon: ' . $warrior->getWeapon() . "\n"; // Legendary Spear
+echo 'Comes from: ' . $warrior->getPlace() . "\n"; // Camelot
 echo '========================'. "\n";
 
 /*********************************************
@@ -203,3 +203,43 @@ echo 'Eat Humans: ' . ($monster->eatsHumans() ? 'yes' : 'no') . "\n";
 echo 'Color: ' . $monster->getColor() . "\n";
 echo 'Number of legs: ' . $monster->getNumLegs() . "\n";
 echo '========================'. "\n";
+
+/*********************************************
+ *  Ignore mapping fields of model that already has a value different from null
+ *********************************************/
+
+// https://a-monster-api.com/api/monster/Giant
+$jsonIncomingFromMonsterAPI = <<<JSON
+{
+    "monster": {
+        "name": "Giant",
+        "eat_humans": 1,
+        "color": "brown",
+        "num_legs": 2
+    }
+}
+JSON;
+
+$apiData = MonsterApiDataObject::fromJson($jsonIncomingFromMonsterAPI);
+
+$giant = new Monster();
+$giant
+    ->setName('Brutus')
+    ->setEatHumans(false)
+    ->setColor(\didix16\examples\Color::fromName('blue'))
+    ->setNumLegs(1);
+
+$apiDataMapper
+    ->configure(Monster::class)
+    ->ignoreFieldsIfSet(['name','color'])
+    ->mapper
+    ->refreshModel($giant, $apiData);
+
+echo "\n";
+echo "\n";
+echo 'Name: ' . $giant->getName() . "\n"; // Brutus
+echo 'Eat Humans: ' . ($giant->eatsHumans() ? 'yes' : 'no') . "\n"; // yes
+echo 'Color: ' . $giant->getColor() . "\n"; // blue
+echo 'Number of legs: ' . $giant->getNumLegs() . "\n"; // 2
+echo '========================'. "\n";
+

@@ -41,6 +41,13 @@ class ModelMap implements ModelMapInterface
     private array $fieldListMap = [];
 
     /**
+     * A list of fields that should be ignored if model instance already has a value
+     * different from null
+     * @var array
+     */
+    private array $ignoreFields = [];
+
+    /**
      * A map that each key is a filter name and value is a FieldFilter
      * Used to be loaded into a FieldInterpreter
      * @var FieldFilter[]
@@ -172,6 +179,43 @@ class ModelMap implements ModelMapInterface
     protected function mapListField($modelField, $externalField)
     {
         $this->fieldListMap[$externalField] = $modelField;
+
+        return $this;
+    }
+
+    /**
+     * Given a model field names, ignores the fields on field interpreting process if model instance
+     * field has value different from null or empty
+     * @param iterable|string $fields
+     * @return $this
+     */
+    public function ignoreFieldsIfSet($fields): ModelMap
+    {
+
+        $fields = is_array($fields) ? $fields: [$fields];
+
+        foreach ($fields as $field){
+
+            $this->ignoreFields[$field] = $field;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Given model fields, remove from ignore field list, the specified model fields
+     * @param $fields
+     * @return $this
+     */
+    public function unignoreFieldsIfSet($fields): ModelMap
+    {
+
+        $fields = is_array($fields) ? $fields: [$fields];
+
+        foreach ($fields as $field){
+
+            unset($this->ignoreFields[$field]);
+        }
 
         return $this;
     }
@@ -362,14 +406,29 @@ class ModelMap implements ModelMapInterface
         // Field data which key is a model property and vale the desired value that we want the property must have
         $fieldData = [];
 
+        $modelClass = new \ReflectionClass(get_class($modelInstance));
+
         if($listObject){
 
             foreach($this->fieldListMap as $externalField => $modelField){
 
                 /**
-                 * Check if model field has a modelFieldFunction to be called before final property asignment
+                 * Check if model field has a modelFieldFunction to be called before final property assignment
                  */
                 list($modelField, $modelFieldFunction) = $this->getModelFieldParts($modelField);
+
+                /**
+                 * Check if we have to ignore field.
+                 */
+                $reflectionField = $modelClass->getProperty($modelField);
+
+                if ($reflectionField->isInitialized($modelInstance))
+                    $value = $reflectionField->getValue($modelInstance);
+                else
+                    $value = null;
+
+                if (isset($this->ignoreFields[$modelField]) && !is_null($value) && $value !== '' )
+                    continue;
 
                 /**
                  * Transform pipeline
@@ -403,9 +462,22 @@ class ModelMap implements ModelMapInterface
         foreach($this->fieldMap as $externalField => $modelField){
 
             /**
-             * Check if model field has a modelFieldFunction to be called before final property asignment
+             * Check if model field has a modelFieldFunction to be called before final property assignment
              */
             list($modelField, $modelFieldFunction) = $this->getModelFieldParts($modelField);
+
+            /**
+             * Check if we have to ignore field.
+             */
+            $reflectionField = $modelClass->getProperty($modelField);
+
+            if ($reflectionField->isInitialized($modelInstance))
+                $value = $reflectionField->getValue($modelInstance);
+            else
+                $value = null;
+
+            if (isset($this->ignoreFields[$modelField]) && !is_null($value) && $value !== '' )
+                continue;
 
             /**
              * Transformation pipeline
