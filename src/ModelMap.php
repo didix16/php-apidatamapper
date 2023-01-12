@@ -406,8 +406,6 @@ class ModelMap implements ModelMapInterface
         // Field data which key is a model property and vale the desired value that we want the property must have
         $fieldData = [];
 
-        $modelClass = new \ReflectionClass(get_class($modelInstance));
-
         if($listObject){
 
             foreach($this->fieldListMap as $externalField => $modelField){
@@ -420,12 +418,7 @@ class ModelMap implements ModelMapInterface
                 /**
                  * Check if we have to ignore field.
                  */
-                $reflectionField = $modelClass->getProperty($modelField);
-
-                if ($reflectionField->isInitialized($modelInstance))
-                    $value = $reflectionField->getValue($modelInstance);
-                else
-                    $value = null;
+                $value = $this->getModelFieldValue($modelInstance, $modelField);
 
                 if (isset($this->ignoreFields[$modelField]) && !is_null($value) && $value !== '' )
                     continue;
@@ -469,12 +462,7 @@ class ModelMap implements ModelMapInterface
             /**
              * Check if we have to ignore field.
              */
-            $reflectionField = $modelClass->getProperty($modelField);
-
-            if ($reflectionField->isInitialized($modelInstance))
-                $value = $reflectionField->getValue($modelInstance);
-            else
-                $value = null;
+            $value = $this->getModelFieldValue($modelInstance, $modelField);
 
             if (isset($this->ignoreFields[$modelField]) && !is_null($value) && $value !== '' )
                 continue;
@@ -548,6 +536,42 @@ class ModelMap implements ModelMapInterface
         $modelFieldFunction = $modelFieldParts[1] ?? null;
 
         return [$modelField, $modelFieldFunction];
+    }
+
+    /**
+     * Given a model instance and a model field, try to get the value for the specified field
+     * First tries for defined properties, then for magic properties
+     * @param object $modelInstance
+     * @param $modelField
+     * @return mixed|null
+     */
+    private function getModelFieldValue(object $modelInstance, $modelField){
+
+        $modelClass = new \ReflectionClass(get_class($modelInstance));
+
+        $value = null;
+        try{
+            // Try to get the value if property is defined on model
+            $reflectionField = $modelClass->getProperty($modelField);
+
+            if ($reflectionField->isInitialized($modelInstance))
+                $value = $reflectionField->getValue($modelInstance);
+
+        }catch (\Throwable $e){
+
+            // If there was an exception, try to get the property magically
+            try {
+                $value = @$modelInstance->{$modelField};
+            }catch (\Throwable $ex){
+                // If there was an exception accessing the property, return null
+                $value = null;
+            }
+
+        }
+
+        return $value;
+
+
     }
 
 }
