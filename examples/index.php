@@ -2,6 +2,9 @@
 
 require_once __DIR__ .'/../vendor/autoload.php';
 
+use didix16\Api\ApiDataMapper\FieldGrammar\FieldLexer;
+use didix16\Api\ApiDataMapper\FieldGrammar\FieldParser;
+use didix16\Api\ApiDataMapper\FieldInterpreter\FieldInterpreter;
 use didix16\examples\Warrior;
 use didix16\Api\ApiDataMapper\GlobalApiDataMapper;
 use didix16\examples\GetColorMapFunction;
@@ -243,3 +246,46 @@ echo 'Color: ' . $giant->getColor() . "\n"; // blue
 echo 'Number of legs: ' . $giant->getNumLegs() . "\n"; // 2
 echo '========================'. "\n";
 
+/*********************************************
+ * Aggregate functions should return UndefinedField if it could not process the field
+ * and should return value if at least 1 value is specified
+ *********************************************/
+
+$data = <<<JSON
+{
+    "warrior_list": [
+      {
+        "name": "Lancelot of the Lake",
+        "is_active": 0,
+        "weapon": "Legendary Spear",
+        "comes_from": "Camelot",
+        "kills": 90
+      },
+      {
+        "name": "Merlin",
+        "is_active": 0,
+        "weapon": "Rod",
+        "comes_from": "Camelot"
+      }
+    ]
+}
+JSON;
+
+$data = WarriorApiDataObject::fromJson($data);
+
+$input = "MIN(warrior_list[].birth:date)";
+$lexer = new FieldLexer($input);
+$parser = new FieldParser($lexer);
+$fi = new FieldInterpreter($parser, $data);
+
+$res = $fi->run();
+
+var_dump($res);
+
+$input = "MAX(warrior_list[].kills)";
+$lexer = new FieldLexer($input);
+$parser = new FieldParser($lexer);
+$fi = new FieldInterpreter($parser, $data);
+
+$res = $fi->run();
+var_dump($res);

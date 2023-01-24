@@ -3,6 +3,8 @@
 
 namespace didix16\Api\ApiDataMapper\FieldInterpreter\Functions;
 
+use didix16\Api\ApiDataObject\UndefinedField;
+
 /**
  * Class MaxFunction
  * @package didix16\Api\ApiDataMapper\FieldInterpreter\Functions
@@ -21,23 +23,27 @@ class MaxFunction extends AggregateFunction
      */
     protected function max(){
 
-        if (empty($this->iterable)) return null;
+        if (empty($this->iterable)) return new UndefinedField();
 
         if (!$this->field)
             return max($this->iterable);
         else {
 
-            return max(
-                array_map(function($obj){
-                    return $obj->{$this->field} ?? null;
-                }, $this->iterable )
-            );
+            $values = array_map(function($obj){
+                return $obj->{$this->field} ?? null;
+            }, $this->iterable );
+
+            // removes null
+            $this->removeNull($values);
+            if (empty($values)) return new UndefinedField();
+
+            return max($values);
 
         }
     }
 
     /**
-     * Given an interable, returns the maximum interpreted value
+     * Given an iterable, returns the maximum interpreted value
      * @param $args
      * @return mixed
      */
@@ -45,5 +51,9 @@ class MaxFunction extends AggregateFunction
     {
         parent::run(...$args);
         return $this->max();
+    }
+
+    private function removeNull(iterable &$value){
+        $value = array_filter((array) $value, function ($item){ return !is_null($item); });
     }
 }

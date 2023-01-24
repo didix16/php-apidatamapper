@@ -539,6 +539,21 @@ class ModelMap implements ModelMapInterface
     }
 
     /**
+     * Given an external field of form field:filter1,filter2..., returns an array like ['field', ['filter1', 'filter2', ...] ]
+     * @param $externalField
+     * @return array
+     */
+    private function getExternalFieldParts($externalField): array {
+
+        $fieldParts = explode(':', $externalField);
+        $field = $fieldParts[0];
+        $filters = $fieldParts[1] ?? '';
+        $filters = explode(',', $filters);
+
+        return [$field, $filters];
+    }
+
+    /**
      * Given a model instance and a model field, try to get the value for the specified field
      * First tries for defined properties, then for magic properties
      * @param object $modelInstance

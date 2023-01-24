@@ -3,6 +3,8 @@
 
 namespace didix16\Api\ApiDataMapper\FieldInterpreter\Functions;
 
+use didix16\Api\ApiDataObject\UndefinedField;
+
 /**
  * Class MinFunction
  * @package didix16\Api\ApiDataMapper\FieldInterpreter\Functions
@@ -21,12 +23,12 @@ class MinFunction extends AggregateFunction
      */
     protected function min(){
 
-        if (empty($this->iterable)) return null;
+        if (empty($this->iterable)) return new UndefinedField();
 
         if (!$this->field) {
             // removes null
             $this->removeNull($this->iterable);
-            if (empty($this->iterable)) return null;
+            if (empty($this->iterable)) return new UndefinedField();
             return min($this->iterable);
 
         }else {
@@ -37,7 +39,7 @@ class MinFunction extends AggregateFunction
 
             // removes null
             $this->removeNull($values);
-            if (empty($values)) return null;
+            if (empty($values)) return new UndefinedField();
 
             return min($values);
 

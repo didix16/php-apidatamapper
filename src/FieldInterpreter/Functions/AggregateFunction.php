@@ -15,6 +15,11 @@ abstract class AggregateFunction extends InterpreterFunction
     protected $iterable = [];
     protected $field = null;
 
+    /**
+     * Should return a value or didix16\Api\ApiDataObject\UndefinedField if null or not specified value
+     * @param ...$args
+     * @return mixed|void
+     */
     protected function run(...$args){
 
         $this->iterable = $args[0];
