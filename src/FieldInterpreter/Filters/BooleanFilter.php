@@ -39,6 +39,8 @@ class BooleanFilter extends FieldFilter
             return;
         }
 
+        if (is_bool($value)) return;
+
         $false = (preg_match('#^([fF][aA][lL][sS][eE]|0|[Nn][oO])$#', $value) === 1);
         $true =  (preg_match('#^([tT][rR][uU][eE]|1|[yY]([eE][sS]))$#', $value) === 1);
 
